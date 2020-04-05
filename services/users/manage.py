@@ -1,14 +1,18 @@
+# services/users/manage.py
+
+
 import sys
 import unittest
 
 from flask.cli import FlaskGroup
 
-from project import app, db
+from project import create_app, db
+from project.api.models import User
 
-cli = FlaskGroup(app)
+app = create_app()
+cli = FlaskGroup(create_app=create_app)
 
 
-# new
 @cli.command('recreate_db')
 def recreate_db():
     db.drop_all()
@@ -24,6 +28,14 @@ def test():
     if result.wasSuccessful():
         return 0
     sys.exit(result)
+
+
+@cli.command('seed_db')
+def seed_db():
+    """Seeds the database."""
+    db.session.add(User(username='ryan', email="ryan@3wisemonkeys.org"))
+    db.session.add(User(username='nichelle', email="nichelle@3wisemonkeys.org"))
+    db.session.commit()
 
 
 if __name__ == '__main__':
