@@ -2,3 +2,5 @@ __pycache__
 env
 htmlcov
 /services/users/htmlcov/
+.vagrant
+.idea

@@ -1,9 +1,10 @@
-version: '3.7'
+version: '2.0'
 
 services:
 
   users:
-    build:
+    container_name: users
+    build:    
       context: ./services/users
       dockerfile: Dockerfile
     volumes:
@@ -19,6 +20,7 @@ services:
       - users-db
 
   users-db:
+    container_name: users-db
     build:
       context: ./services/users/project/db
       dockerfile: Dockerfile
@@ -29,6 +31,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   nginx:
+    container_name: nginx
     build:
       context: ./services/nginx
       dockerfile: Dockerfile
@@ -47,7 +50,7 @@ services:
       dockerfile: Dockerfile-prod
     environment:
         - NODE_ENV=production
-        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+        - REACT_APP_USERS_SERVICE_URL=http://localhost
     ports:
       - '3007:80'
     depends_on:
