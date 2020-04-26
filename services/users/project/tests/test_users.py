@@ -7,13 +7,9 @@ import unittest
 from project.tests.base import BaseTestCase
 from project import db
 from project.api.models import User
+from project.tests.utils import add_user
 
 
-def add_user(username, email, password):
-    user = User(username=username, email=email,password=password)
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 class TestUserService(BaseTestCase):
@@ -186,6 +182,17 @@ class TestUserService(BaseTestCase):
         user_one = add_user('justatest', 'test@test.com', 'greaterthaneight')
         user_two = add_user('justatest2', 'test@test2.com', 'greaterthaneight')
         self.assertNotEqual(user_one.password, user_two.password)
+
+    def test_encode_auth_token(self):
+        user = add_user('justatest', 'test@test.com', 'test')
+        auth_token = user.encode_auth_token(user.id)
+        self.assertTrue(isinstance(auth_token, bytes))
+
+    def test_decode_auth_token(self):
+        user = add_user('justatest', 'test@test.com', 'test')
+        auth_token = user.encode_auth_token(user.id)
+        self.assertTrue(isinstance(auth_token, bytes))
+        self.assertEqual(User.decode_auth_token(auth_token), user.id)
 
 
 if __name__ == '__main__':
